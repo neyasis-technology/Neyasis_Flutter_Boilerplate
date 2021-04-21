@@ -1,0 +1,15 @@
+{
+  "global": {
+    "authenticationFailed": "Oturumunuz Sonlandırılmıştır Lütfen Tekrar Giriş Yapınız.",
+    "ok": "Tamam",
+    "cancel": "Vazgeç",
+    "yes": "Evet",
+    "no": "Hayır"
+  },
+  "homeScreen": {
+    "title": "Anasayfa",
+    "add": "Ekle",
+    "delete": "Sil",
+    "addingInformation": "Lütfen bir değer giriniz"
+  }
+}

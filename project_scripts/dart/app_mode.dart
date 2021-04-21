@@ -1,0 +1,1 @@
+enum ProjectScriptAppMode{unknown,development,production,uat,test }

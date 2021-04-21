@@ -1,0 +1,11 @@
+{
+  "global": {
+    "authenticationFailed": "Something went wrong. Please login again."
+  },
+  "homeScreen": {
+    "title": "Home Screen",
+    "add": "Add",
+    "delete": "Delete",
+    "addingInformation": "Please enter a value"
+  }
+}
