@@ -24,25 +24,116 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
-android {
-    compileSdkVersion 30
 
+def applicationName = "ISIMSIZ"
+def envApplicationId = null
+def envAndroidSdkVersionMin = null
+def envAndroidSdkVersionMax = null
+def envVersionName = null
+def envVersionCode = null
+def envKeyStoreFilePath = null
+def envKeyStoreStorePassword = null
+def envKeyStoreKeyAlias = null
+def envKeyStoreKeyPassword = null
+def envJSONFile = file('../../.env.json')
+def parsedJson = new groovy.json.JsonSlurper().parseText(envJSONFile.text)
+switch (parsedJson.environmentMode) {
+    case 1:
+        //Development mode
+        applicationName = parsedJson.applicationName+"-DEV"
+        envApplicationId = parsedJson.bundleId.development.android
+        envAndroidSdkVersionMin = parsedJson.androidSdkVersion.development.min
+        envAndroidSdkVersionMax = parsedJson.androidSdkVersion.development.max
+        envVersionName = parsedJson.versionName.development.android
+        envVersionCode = parsedJson.versionCode.development.android
+        envKeyStoreFilePath = parsedJson.androidKeyStore.development.filePath
+        envKeyStoreStorePassword = parsedJson.androidKeyStore.development.storePassword
+        envKeyStoreKeyAlias = parsedJson.androidKeyStore.development.keyAlias
+        envKeyStoreKeyPassword = parsedJson.androidKeyStore.development.keyPassword
+        break;
+    case 2:
+        //Production mode
+        applicationName = parsedJson.applicationName
+        envApplicationId = parsedJson.bundleId.production.android
+        envAndroidSdkVersionMin = parsedJson.androidSdkVersion.production.min
+        envAndroidSdkVersionMax = parsedJson.androidSdkVersion.production.max
+        envVersionName = parsedJson.versionName.production.android
+        envVersionCode = parsedJson.versionCode.production.android
+        envKeyStoreFilePath = parsedJson.androidKeyStore.production.filePath
+        envKeyStoreStorePassword = parsedJson.androidKeyStore.production.storePassword
+        envKeyStoreKeyAlias = parsedJson.androidKeyStore.production.keyAlias
+        envKeyStoreKeyPassword = parsedJson.androidKeyStore.production.keyPassword
+        break;
+    case 3:
+        //Uat mode
+        applicationName = parsedJson.applicationName+"-UAT"
+        envApplicationId = parsedJson.bundleId.uat.android
+        envAndroidSdkVersionMin = parsedJson.androidSdkVersion.uat.min
+        envAndroidSdkVersionMax = parsedJson.androidSdkVersion.uat.max
+        envVersionName = parsedJson.versionName.uat.android
+        envVersionCode = parsedJson.versionCode.uat.android
+        envKeyStoreFilePath = parsedJson.androidKeyStore.uat.filePath
+        envKeyStoreStorePassword = parsedJson.androidKeyStore.uat.storePassword
+        envKeyStoreKeyAlias = parsedJson.androidKeyStore.uat.keyAlias
+        envKeyStoreKeyPassword = parsedJson.androidKeyStore.uat.keyPassword
+        break;
+    case 4:
+        //test mode
+        applicationName = parsedJson.applicationName+"-TEST"
+        envApplicationId = parsedJson.bundleId.test.android
+        envAndroidSdkVersionMin = parsedJson.androidSdkVersion.test.min
+        envAndroidSdkVersionMax = parsedJson.androidSdkVersion.test.max
+        envVersionName = parsedJson.versionName.test.android
+        envVersionCode = parsedJson.versionCode.test.android
+        envKeyStoreFilePath = parsedJson.androidKeyStore.test.filePath
+        envKeyStoreStorePassword = parsedJson.androidKeyStore.test.storePassword
+        envKeyStoreKeyAlias = parsedJson.androidKeyStore.test.keyAlias
+        envKeyStoreKeyPassword = parsedJson.androidKeyStore.test.keyPassword
+        break;
+    default:
+        throw new Exception("Please set your environment app mode in .env.json")
+        System.exit(0)
+        break;
+}
+
+print("""
+==========    PROJECT VARIABLES    ==========
+applicationId = ${envApplicationId}
+androidSdkVersionMin = ${envAndroidSdkVersionMin} 
+androidSdkVersionMax = ${envAndroidSdkVersionMax}
+versionName = ${envVersionName}
+versionCode = ${envVersionCode}
+keyStoreFilePath = ${envKeyStoreFilePath}
+keyStoreStorePassword = ${envKeyStoreStorePassword}
+keyStoreKeyAlias = ${envKeyStoreKeyAlias}
+keyStoreKeyPassword = ${envKeyStoreKeyPassword}
+==========  END PROJECT VARIABLES  ==========
+""")
+android {
+    compileSdkVersion 29
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+    
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.flutter.neyasis_flutter_boilerplate"
-        minSdkVersion 16
-        targetSdkVersion 30
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        applicationId envApplicationId
+        minSdkVersion envAndroidSdkVersionMin
+        targetSdkVersion envAndroidSdkVersionMax
+        versionCode envVersionCode
+        versionName envVersionName
+        manifestPlaceholders = [app_name:applicationName]
     }
 
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+    signingConfigs {
+        config {
+            storeFile file(envKeyStoreFilePath)
+            storePassword envKeyStoreStorePassword
+            keyAlias envKeyStoreKeyAlias
+            keyPassword envKeyStoreKeyPassword
         }
     }
+    
 }
 
 flutter {
