@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:neyasis_flutter_boilerplate/screens/counter_view.dart';
 
 import 'constants/app.dart';
 import 'constants/colors.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
             primaryColor: AppColor.main,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home: SplashScreen(),
+          home: CounterView(),
         );
       },
     );
