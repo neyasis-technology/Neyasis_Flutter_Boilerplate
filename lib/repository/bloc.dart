@@ -9,7 +9,8 @@ abstract class BlocRepository<RequestObject, ResponseObject> {
   ResponseObject? _store;
 
   // ignore: close_sinks
-  final PublishSubject<ResponseObject?> _fetcher = PublishSubject<ResponseObject?>();
+  final PublishSubject<ResponseObject?> _fetcher =
+      PublishSubject<ResponseObject?>();
   Uuid _uuidGenerator = new Uuid();
   String _lastRequestUniqueId = "";
   Function(ResponseObject?)? _listener;
@@ -50,8 +51,11 @@ abstract class BlocRepository<RequestObject, ResponseObject> {
     this.prevProcess();
   }
 
-  void fetcherSink(ResponseObject? responseObject, {bool forceSink = false, required lastRequestUniqueId}) {
-    if ((forceSink != null && forceSink) || lastRequestUniqueId == this._lastRequestUniqueId) {
+  void fetcherSink(ResponseObject? responseObject,
+      {bool forceSink = false, required lastRequestUniqueId}) {
+    // ignore: unnecessary_null_comparison
+    if ((forceSink != null && forceSink) ||
+        lastRequestUniqueId == this._lastRequestUniqueId) {
       this._store = responseObject;
       if (responseObject == null)
         this.fetcher.sink.addError(-1);
@@ -63,7 +67,8 @@ abstract class BlocRepository<RequestObject, ResponseObject> {
     }
   }
 
-  void setListener(Function(ResponseObject?) listener) => this._listener = listener;
+  void setListener(Function(ResponseObject?) listener) =>
+      this._listener = listener;
 
   dispose() {
     this._fetcher.close();

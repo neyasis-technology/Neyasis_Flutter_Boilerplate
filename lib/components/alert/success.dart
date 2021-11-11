@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:neyasis_flutter_boilerplate/components/alert/sequence_animation.dart';
+import 'sequence_animation.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 
 class SuccessView extends StatefulWidget {
@@ -11,7 +11,8 @@ class SuccessView extends StatefulWidget {
   }
 }
 
-class SuccessViewState extends State<SuccessView> with SingleTickerProviderStateMixin {
+class SuccessViewState extends State<SuccessView>
+    with SingleTickerProviderStateMixin {
   late AnimationController animationController;
 
   late SequenceAnimation sequenceAnimation;
@@ -48,7 +49,9 @@ class SuccessViewState extends State<SuccessView> with SingleTickerProviderState
         animation: animationController,
         builder: (c, w) {
           return new CustomPaint(
-            painter: new _CustomPainter(strokeStart: sequenceAnimation['start'].value, strokeEnd: sequenceAnimation['end'].value),
+            painter: new _CustomPainter(
+                strokeStart: sequenceAnimation['start'].value,
+                strokeEnd: sequenceAnimation['end'].value),
           );
         });
   }
@@ -85,7 +88,8 @@ class _CustomPainter extends CustomPainter {
 
   Path createPath() {
     Path path = new Path();
-    path.addArc(new Rect.fromCircle(center: new Offset(_r, _r), radius: _r), math.radians(60.0 - 30.0), math.radians(-200.0));
+    path.addArc(new Rect.fromCircle(center: new Offset(_r, _r), radius: _r),
+        math.radians(60.0 - 30.0), math.radians(-200.0));
     path.lineTo(24.0, 46.0);
     path.lineTo(49.0, 18.0);
     return path;
@@ -94,7 +98,8 @@ class _CustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Path path = new Path();
-    path.addArc(new Rect.fromCircle(center: new Offset(_r, _r), radius: _r), 0.0, math.radians(360.0));
+    path.addArc(new Rect.fromCircle(center: new Offset(_r, _r), radius: _r),
+        0.0, math.radians(360.0));
     _paint.color = Color(0x4096d873);
     canvas.drawPath(path, _paint);
 
@@ -108,6 +113,7 @@ class _CustomPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_CustomPainter oldDelegate) {
-    return strokeStart != oldDelegate.strokeStart || strokeEnd != oldDelegate.strokeEnd;
+    return strokeStart != oldDelegate.strokeStart ||
+        strokeEnd != oldDelegate.strokeEnd;
   }
 }

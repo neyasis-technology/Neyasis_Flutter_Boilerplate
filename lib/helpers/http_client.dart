@@ -3,20 +3,21 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:neyasis_flutter_boilerplate/constants/app.dart';
-import 'package:neyasis_flutter_boilerplate/constants/app_mode.dart';
-import 'package:neyasis_flutter_boilerplate/constants/http_call_type.dart';
-import 'package:neyasis_flutter_boilerplate/constants/http_client_api_url.dart';
-import 'package:neyasis_flutter_boilerplate/helpers/alerts.dart';
-import 'package:neyasis_flutter_boilerplate/model/storage/user_information.dart';
-import 'package:neyasis_flutter_boilerplate/repository/http_response.dart';
-import 'package:neyasis_flutter_boilerplate/storage/shared_preferances.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../constants/app.dart';
+import '../constants/app_mode.dart';
+import '../constants/http_call_type.dart';
+import '../constants/http_client_api_url.dart';
+import '../model/storage/user_information.dart';
+import '../repository/http_response.dart';
+import '../storage/shared_preferances.dart';
+import 'alerts.dart';
 
 class HttpClient {
   static bool _blockLogging = false;
 
-  static HttpResponseRepository<T> _errorModel<T>() => HttpResponseRepository<T>(
+  static HttpResponseRepository<T> _errorModel<T>() =>
+      HttpResponseRepository<T>(
         response: null,
         hasError: true,
         errorMessage: "Üzgünüz, bir sorun oluştu.",
@@ -24,7 +25,8 @@ class HttpClient {
         errorCode: "",
       );
 
-  static Future<Map<String, String>> generateHeaders({required bool withAuth, int? page, int? pageSize}) async {
+  static Future<Map<String, String>> generateHeaders(
+      {required bool withAuth, int? page, int? pageSize}) async {
     Map<String, String> headers = {
       "X-Version-Code": "${Application.versionCode}",
       "X-Version-Name": "${Application.versionName}",
@@ -33,8 +35,10 @@ class HttpClient {
     };
 
     if (withAuth) {
-      UserInformation? userInformation = await AppSharedPreferences.getUserInformation();
-      if (userInformation == null) throw ("Please set your user information object");
+      UserInformation? userInformation =
+          await AppSharedPreferences.getUserInformation();
+      if (userInformation == null)
+        throw ("Please set your user information object");
       headers.addAll({"Authorization": "Bearer ${userInformation.token}"});
     }
     return headers;
@@ -102,10 +106,10 @@ class HttpClient {
     if (Application.appMode == AppMode.production || _blockLogging) return;
     debugPrint("""
 ====================ERROR REQUEST====================
-URL: ${apiUrl}
-HEADERS: ${headers}
+URL: $apiUrl
+HEADERS: $headers
 REQUEST-DATA: ${jsonEncode(data)}
-RESPONSE-ERROR: ${dioError}
+RESPONSE-ERROR: $dioError
 RESPONSE-DATA: ${dioError.response}
 =======================================================
       """, wrapWidth: 1024);
@@ -115,8 +119,8 @@ RESPONSE-DATA: ${dioError.response}
     if (Application.appMode == AppMode.production || _blockLogging) return;
     debugPrint("""
 ====================SUCCESS REQUEST====================
-URL: ${apiUrl}
-HEADERS: ${headers}
+URL: $apiUrl
+HEADERS: $headers
 REQUEST-DATA: ${jsonEncode(data)}
 RESPONSE: ${dioResponse.data}
 =======================================================
@@ -124,17 +128,23 @@ RESPONSE: ${dioResponse.data}
   }
 
   static Future<bool> _refreshToken() async {
-    UserInformation? userInformation = await AppSharedPreferences.getUserInformation();
+    UserInformation? userInformation =
+        await AppSharedPreferences.getUserInformation();
     if (userInformation == null) return false;
-    HttpResponseRepository<dynamic> responseRepository = await HttpClient.call<dynamic>(
+    HttpResponseRepository<dynamic> responseRepository =
+        await HttpClient.call<dynamic>(
       type: HttpCallType.get,
       apiUrl: HttpClientApiUrl.refreshToken,
       withAuth: false,
-      data: {"AccessToken": userInformation.token, "RefreshToken": userInformation.refreshToken},
+      data: {
+        "AccessToken": userInformation.token,
+        "RefreshToken": userInformation.refreshToken
+      },
       dynamicResponse: true,
     );
     if (responseRepository.hasError) {
       AppDialogs.showError(tr("global.authenticationFailed"), onPress: () {
+        // ignore: todo
         //TODO::You should navigate login screen on this code block
         // Navigator.of(Application.context).pushAndRemoveUntil(
         //   MaterialPageRoute(builder: (_) => LoginScreen()),
@@ -143,8 +153,10 @@ RESPONSE: ${dioResponse.data}
       });
       return false;
     }
+    // ignore: todo
     //TODO::You should change this code block if your refresh token body is different
-    await AppSharedPreferences.setUserInformation(UserInformation.fromLoginResponse(responseRepository.response));
+    await AppSharedPreferences.setUserInformation(
+        UserInformation.fromLoginResponse(responseRepository.response));
     return true;
   }
 
@@ -160,9 +172,12 @@ RESPONSE: ${dioResponse.data}
     bool withAuth = true,
     CancelToken? cancelToken,
   }) async {
-    if (fromJSON == null && dynamicResponse == false) throw ("Please set fromJSON response");
+    if (fromJSON == null && dynamicResponse == false)
+      throw ("Please set fromJSON response");
+    // ignore: unnecessary_null_comparison
     if (type == null) throw ("Please set HttpCallType");
-    Map<String, String> headers = await generateHeaders(withAuth: withAuth, page: page, pageSize: pageSize);
+    Map<String, String> headers = await generateHeaders(
+        withAuth: withAuth, page: page, pageSize: pageSize);
     late Response dioResponse;
     String url = apiUrlString ?? apiUrl!.uri;
     String queryString = "";
@@ -172,7 +187,7 @@ RESPONSE: ${dioResponse.data}
           queryString = _getQueryString(data);
           queryString = queryString.substring(1, queryString.length);
         }
-        url = "${url}?${queryString}";
+        url = "$url?$queryString";
         dioResponse = await _get(
           url: url,
           cancelToken: cancelToken,
@@ -202,7 +217,8 @@ RESPONSE: ${dioResponse.data}
       }
       _printSuccess(url, headers, data, dioResponse);
       return HttpResponseRepository(
-        response: dynamicResponse ? dioResponse.data : fromJSON!(dioResponse.data),
+        response:
+            dynamicResponse ? dioResponse.data : fromJSON!(dioResponse.data),
       );
     } on DioError catch (dioError) {
       _printError(url, headers, data, dioError);
@@ -226,13 +242,18 @@ RESPONSE: ${dioResponse.data}
         return _errorModel<T>();
       }
       try {
-        if (dioError.response!.data["error_message"] == null && dioError.response!.data["statusMessage"] == null) return _errorModel<T>();
+        if (dioError.response!.data["error_message"] == null &&
+            dioError.response!.data["statusMessage"] == null)
+          return _errorModel<T>();
         return HttpResponseRepository(
           response: null,
           hasError: true,
-          errorMessage: dioError.response!.data["error_message"] ?? dioError.response!.data["statusMessage"],
-          statusCode: dioError.response!.data["status_code"] ?? dioError.response!.data["statusCode"],
-          errorCode: dioError.response!.data["error_code"] ?? dioError.response!.data["errorCode"],
+          errorMessage: dioError.response!.data["error_message"] ??
+              dioError.response!.data["statusMessage"],
+          statusCode: dioError.response!.data["status_code"] ??
+              dioError.response!.data["statusCode"],
+          errorCode: dioError.response!.data["error_code"] ??
+              dioError.response!.data["errorCode"],
         );
       } catch (err) {
         return _errorModel<T>();
@@ -243,7 +264,8 @@ RESPONSE: ${dioResponse.data}
     }
   }
 
-  static String _getQueryString(Map params, {String prefix: '&', bool inRecursion: false}) {
+  static String _getQueryString(Map params,
+      {String prefix: '&', bool inRecursion: false}) {
     String query = '';
     params.forEach((key, value) {
       if (inRecursion) {
@@ -251,14 +273,18 @@ RESPONSE: ${dioResponse.data}
       }
       if (value is List) {
         value.forEach((element) {
-          query += '$prefix$key=${Uri.encodeComponent("${element}")}';
+          query += '$prefix$key=${Uri.encodeComponent("$element")}';
         });
-      } else if (value is String || value is int || value is double || value is bool) {
+      } else if (value is String ||
+          value is int ||
+          value is double ||
+          value is bool) {
         query += '$prefix$key=${Uri.encodeComponent(value)}';
       } else if (value is List || value is Map) {
         if (value is List) value = value.asMap();
         value.forEach((k, v) {
-          query += _getQueryString({k: v}, prefix: '$prefix$key', inRecursion: true);
+          query +=
+              _getQueryString({k: v}, prefix: '$prefix$key', inRecursion: true);
         });
       }
     });

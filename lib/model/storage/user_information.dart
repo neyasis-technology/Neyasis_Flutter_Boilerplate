@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:neyasis_flutter_boilerplate/helpers/functions.dart';
-import 'package:neyasis_flutter_boilerplate/model/bloc/api/login/response.dart';
+import '../../helpers/functions.dart';
+import '../bloc/api/login/response.dart';
 
 class UserInformation {
   String token;
@@ -28,7 +28,8 @@ class UserInformation {
 
   factory UserInformation.fromStorage(String storageValue) {
     Map<String, String> storageObject = jsonDecode(storageValue);
-    Map<String, dynamic> claims = AppFunctions.jwtParser(storageObject["token"] ?? "");
+    Map<String, dynamic> claims =
+        AppFunctions.jwtParser(storageObject["token"] ?? "");
     return UserInformation(
       token: storageObject["token"] ?? "",
       refreshToken: storageObject["refreshToken"] ?? "",
