@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:neyasis_flutter_boilerplate/components/alert/cancel.dart';
-import 'package:neyasis_flutter_boilerplate/components/alert/confirm.dart';
-import 'package:neyasis_flutter_boilerplate/components/alert/success.dart';
-import 'package:neyasis_flutter_boilerplate/components/alert/type.dart';
-import 'package:neyasis_flutter_boilerplate/constants/colors.dart';
-import 'package:neyasis_flutter_boilerplate/helpers/device_info.dart';
+import 'cancel.dart';
+import 'confirm.dart';
+import 'success.dart';
+import 'type.dart';
+import '../../constants/colors.dart';
+import '../../helpers/device_info.dart';
+
 typedef bool AppAlertOnPress(bool isConfirm);
 
 class AppAlertOptions {
@@ -37,6 +38,7 @@ class AppAlertDialog extends StatefulWidget {
   AppAlertDialog({
     required this.options,
     this.curve,
+    // ignore: unnecessary_null_comparison
   }) : assert(options != null);
 
   @override
@@ -45,7 +47,8 @@ class AppAlertDialog extends StatefulWidget {
   }
 }
 
-class AppAlertDialogState extends State<AppAlertDialog> with SingleTickerProviderStateMixin, AppAlert {
+class AppAlertDialogState extends State<AppAlertDialog>
+    with SingleTickerProviderStateMixin, AppAlert {
   late AnimationController controller;
   late Animation<double> tween;
   late AppAlertOptions _options;
@@ -55,7 +58,9 @@ class AppAlertDialogState extends State<AppAlertDialog> with SingleTickerProvide
     _options = widget.options;
     controller = new AnimationController(vsync: this);
     tween = new Tween(begin: 0.0, end: 1.0).animate(controller);
-    controller.animateTo(1.0, duration: new Duration(milliseconds: 300), curve: widget.curve ?? AppAlert.showCurve);
+    controller.animateTo(1.0,
+        duration: new Duration(milliseconds: 300),
+        curve: widget.curve ?? AppAlert.showCurve);
     AppAlert._state = this;
     super.initState();
   }
@@ -85,7 +90,7 @@ class AppAlertDialogState extends State<AppAlertDialog> with SingleTickerProvide
   @override
   Widget build(BuildContext context) {
     List<Widget> listOfChildren = [];
-    switch (_options.style) {
+    switch (_options.style!) {
       case AppAlertType.success:
         listOfChildren.add(new SizedBox(
           width: 64.0,
@@ -126,18 +131,21 @@ class AppAlertDialogState extends State<AppAlertDialog> with SingleTickerProvide
         ),
         child: new Text(
           _options.title!,
-          style: new TextStyle(fontSize: ScreenUtil().setSp(24), color: new Color(0xff575757)),
+          style: new TextStyle(
+              fontSize: ScreenUtil().setSp(24), color: new Color(0xff575757)),
         ),
       ));
     }
 
     if (_options.subtitle != null) {
       listOfChildren.add(new Padding(
-        padding: new EdgeInsets.only(top: 20.0, bottom: 10.0, left: 10.0, right: 10.0),
+        padding: new EdgeInsets.only(
+            top: 20.0, bottom: 10.0, left: 10.0, right: 10.0),
         child: new Text(
           _options.subtitle!,
           textAlign: TextAlign.center,
-          style: new TextStyle(fontSize: ScreenUtil().setSp(15), color: new Color(0xff797979)),
+          style: new TextStyle(
+              fontSize: ScreenUtil().setSp(15), color: new Color(0xff797979)),
         ),
       ));
     }
@@ -149,6 +157,7 @@ class AppAlertDialogState extends State<AppAlertDialog> with SingleTickerProvide
           child: new Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              // ignore: deprecated_member_use
               new FlatButton(
                 height: DeviceInfo.height(5),
                 minWidth: DeviceInfo.width(35),
@@ -159,12 +168,14 @@ class AppAlertDialogState extends State<AppAlertDialog> with SingleTickerProvide
                 color: AppColor.red,
                 child: new Text(
                   _options.cancelButtonText ?? AppAlert.cancelText,
-                  style: new TextStyle(color: Colors.white, fontSize: ScreenUtil().setSp(15)),
+                  style: new TextStyle(
+                      color: Colors.white, fontSize: ScreenUtil().setSp(15)),
                 ),
               ),
               new SizedBox(
                 width: 10.0,
               ),
+              // ignore: deprecated_member_use
               new FlatButton(
                 height: DeviceInfo.height(5),
                 minWidth: DeviceInfo.width(35),
@@ -175,7 +186,8 @@ class AppAlertDialogState extends State<AppAlertDialog> with SingleTickerProvide
                 color: AppColor.green,
                 child: new Text(
                   _options.confirmButtonText ?? AppAlert.confirmText,
-                  style: new TextStyle(color: Colors.white, fontSize: ScreenUtil().setSp(15)),
+                  style: new TextStyle(
+                      color: Colors.white, fontSize: ScreenUtil().setSp(15)),
                 ),
               ),
             ],
@@ -184,6 +196,7 @@ class AppAlertDialogState extends State<AppAlertDialog> with SingleTickerProvide
       } else {
         listOfChildren.add(new Padding(
           padding: new EdgeInsets.only(top: 10.0),
+          // ignore: deprecated_member_use
           child: new FlatButton(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(DeviceInfo.height(5)),
@@ -194,7 +207,8 @@ class AppAlertDialogState extends State<AppAlertDialog> with SingleTickerProvide
             color: _options.confirmButtonColor ?? AppAlert.success,
             child: new Text(
               _options.confirmButtonText ?? AppAlert.successText,
-              style: new TextStyle(color: Colors.white, fontSize: ScreenUtil().setSp(15)),
+              style: new TextStyle(
+                  color: Colors.white, fontSize: ScreenUtil().setSp(15)),
             ),
           ),
         ));

@@ -10,16 +10,18 @@ class ConfirmView extends StatefulWidget {
   }
 }
 
-class ConfirmViewState extends State<ConfirmView> with SingleTickerProviderStateMixin {
+class ConfirmViewState extends State<ConfirmView>
+    with SingleTickerProviderStateMixin {
   late AnimationController animationController;
 
   late Animation<Color?> animation;
 
   @override
   void initState() {
-    int factor = 50;
     animationController = new AnimationController(vsync: this);
-    animation = new ColorTween(begin: new Color(0xffF7D58B), end: new Color(0xffF2A665)).animate(animationController);
+    animation =
+        new ColorTween(begin: new Color(0xffF7D58B), end: new Color(0xffF2A665))
+            .animate(animationController);
 
     //delay
     new Future.delayed(new Duration(milliseconds: 200)).then((_) {
@@ -30,13 +32,19 @@ class ConfirmViewState extends State<ConfirmView> with SingleTickerProviderState
   }
 
   void forward() {
-    animationController.animateTo(1.0, duration: new Duration(milliseconds: 600), curve: Curves.ease).then((_) {
+    animationController
+        .animateTo(1.0,
+            duration: new Duration(milliseconds: 600), curve: Curves.ease)
+        .then((_) {
       backward();
     });
   }
 
   void backward() {
-    animationController.animateTo(0.0, duration: new Duration(milliseconds: 600), curve: Curves.ease).then((_) {
+    animationController
+        .animateTo(0.0,
+            duration: new Duration(milliseconds: 600), curve: Curves.ease)
+        .then((_) {
       forward();
     });
   }
@@ -78,14 +86,18 @@ class _CustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Path path = new Path();
-    path.addArc(new Rect.fromCircle(center: new Offset(_r, _r), radius: _r), 0.0, math.radians(360.0));
+    path.addArc(new Rect.fromCircle(center: new Offset(_r, _r), radius: _r),
+        0.0, math.radians(360.0));
 
     double factor = 64 / 1.5;
     path.moveTo(_r, 15.0);
     path.lineTo(_r, factor);
 
     path.moveTo(_r, factor + 10.0);
-    path.addArc(new Rect.fromCircle(center: new Offset(_r, factor + 10.0), radius: 1.0), 0.0, math.radians(360.0));
+    path.addArc(
+        new Rect.fromCircle(center: new Offset(_r, factor + 10.0), radius: 1.0),
+        0.0,
+        math.radians(360.0));
 
     canvas.drawPath(path, _paint);
   }

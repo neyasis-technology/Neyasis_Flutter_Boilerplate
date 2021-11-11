@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:neyasis_flutter_boilerplate/constants/app.dart';
+import '../constants/app.dart';
 
 class DeviceInfo {
   static double width(double width) {

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:neyasis_flutter_boilerplate/components/alert/sequence_animation.dart';
+import 'sequence_animation.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 
 class CancelView extends StatefulWidget {
@@ -11,19 +11,22 @@ class CancelView extends StatefulWidget {
   }
 }
 
-class CancelViewState extends State<CancelView> with SingleTickerProviderStateMixin {
+class CancelViewState extends State<CancelView>
+    with SingleTickerProviderStateMixin {
   late AnimationController animationController;
 
   late SequenceAnimation sequenceAnimation;
 
   @override
   void initState() {
-    int factor = 50;
     animationController = new AnimationController(vsync: this);
 
     sequenceAnimation = new SequenceAnimationBuilder()
         .addAnimatable(
-            animatable: new Tween(begin: 90.0, end: 0.0), from: new Duration(milliseconds: 0), to: new Duration(milliseconds: 300), tag: "rotation")
+            animatable: new Tween(begin: 90.0, end: 0.0),
+            from: new Duration(milliseconds: 0),
+            to: new Duration(milliseconds: 300),
+            tag: "rotation")
         .addAnimatable(
             animatable: new Tween(begin: 0.3, end: 1.0),
             from: new Duration(milliseconds: 600),
@@ -47,7 +50,10 @@ class CancelViewState extends State<CancelView> with SingleTickerProviderStateMi
   }
 
   void forward() {
-    animationController.animateTo(1.0, duration: new Duration(milliseconds: 600), curve: Curves.ease).then((_) {});
+    animationController
+        .animateTo(1.0,
+            duration: new Duration(milliseconds: 600), curve: Curves.ease)
+        .then((_) {});
   }
 
   @override
@@ -55,16 +61,21 @@ class CancelViewState extends State<CancelView> with SingleTickerProviderStateMi
     animationController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return new AnimatedBuilder(
         animation: animationController,
         builder: (c, w) {
           return new Transform(
-            transform: Matrix4.rotationX(math.radians(sequenceAnimation['rotation'].value)),
+            transform: Matrix4.rotationX(
+                math.radians(sequenceAnimation['rotation'].value)),
             origin: new Offset(0.0, 32.0),
             child: new CustomPaint(
-              painter: new _CustomPainter(color: Colors.red, fade: sequenceAnimation['fade'].value, factor: sequenceAnimation['fact'].value),
+              painter: new _CustomPainter(
+                  color: Colors.red,
+                  fade: sequenceAnimation['fade'].value,
+                  factor: sequenceAnimation['fact'].value),
             ),
           );
         });
@@ -80,7 +91,8 @@ class _CustomPainter extends CustomPainter {
   final double fade;
   final double factor;
 
-  _CustomPainter({required this.color, required this.fade, required this.factor}) {
+  _CustomPainter(
+      {required this.color, required this.fade, required this.factor}) {
     _paint.strokeCap = StrokeCap.round;
     _paint.style = PaintingStyle.stroke;
     _paint.strokeWidth = 4.0;
@@ -92,11 +104,13 @@ class _CustomPainter extends CustomPainter {
     Path path = new Path();
     _paint.color = color;
 
-    path.addArc(new Rect.fromCircle(center: new Offset(_r, _r), radius: _r), 0.0, math.radians(360.0));
+    path.addArc(new Rect.fromCircle(center: new Offset(_r, _r), radius: _r),
+        0.0, math.radians(360.0));
     canvas.drawPath(path, _paint);
 
     path = new Path();
-    _paint.color = new Color(color.value & 0x00FFFFFF + ((0xff * fade).toInt() << 24));
+    _paint.color =
+        new Color(color.value & 0x00FFFFFF + ((0xff * fade).toInt() << 24));
 
     path.moveTo(_r - factor, _r - factor);
     path.lineTo(_r + factor, _r + factor);

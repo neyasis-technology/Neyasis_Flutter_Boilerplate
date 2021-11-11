@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:neyasis_flutter_boilerplate/components/alert/alert.dart';
-import 'package:neyasis_flutter_boilerplate/components/alert/type.dart';
-import 'package:neyasis_flutter_boilerplate/constants/app.dart';
-import 'package:neyasis_flutter_boilerplate/constants/colors.dart';
+import '../components/alert/alert.dart';
+import '../components/alert/type.dart';
+import '../constants/app.dart';
+import '../constants/colors.dart';
 
 class AppDialogs {
   static handleOnPress(Function()? onPress) {
