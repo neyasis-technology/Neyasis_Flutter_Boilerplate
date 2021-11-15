@@ -254,7 +254,7 @@ RESPONSE: ${dioResponse.data}
           query += '$prefix$key=${Uri.encodeComponent("${element}")}';
         });
       } else if (value is String || value is int || value is double || value is bool) {
-        query += '$prefix$key=${Uri.encodeComponent(value)}';
+        query += '$prefix$key=${Uri.encodeComponent("${value}")}';
       } else if (value is List || value is Map) {
         if (value is List) value = value.asMap();
         value.forEach((k, v) {
